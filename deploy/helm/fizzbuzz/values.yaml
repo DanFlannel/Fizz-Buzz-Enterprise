@@ -1,0 +1,43 @@
+# One entry per microservice. Six replicas each because there are six microservices
+# and nobody could think of a better number.
+image:
+  repository: ghcr.io/danflannel/fizzbuzz-enterprise
+  tag: 2.0.0-RC7
+  pullPolicy: IfNotPresent
+
+services:
+  - name: modulo-computation-service
+    port: 8081
+  - name: rule-registry-service
+    port: 8082
+  - name: result-assembly-service
+    port: 8083
+  - name: feature-flag-service
+    port: 8084
+  - name: observability-service
+    port: 8085
+  - name: persistence-and-events-service
+    port: 8086
+
+replicas: 6
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 6
+  maxReplicas: 60
+  # Scale out when p99 modulo latency exceeds 2 microseconds.
+  targetModuloLatencyP99Micros: 2
+
+featureFlags:
+  fizzNextRolloutPercent: 0
+
+kafka:
+  topic: fizzbuzz.results.v1
