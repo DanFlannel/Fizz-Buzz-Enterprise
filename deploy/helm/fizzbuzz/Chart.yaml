@@ -1,0 +1,12 @@
+apiVersion: v2
+name: fizzbuzz-enterprise
+description: Horizontally scalable divisibility as a service
+type: application
+version: 2.0.0-rc7
+appVersion: "2.0.0-RC7"
+keywords:
+  - fizzbuzz
+  - modulo
+  - enterprise
+maintainers:
+  - name: FizzBuzz Platform Team

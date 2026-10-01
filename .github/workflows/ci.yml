@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build and test all eight modules
+        run: mvn -B -ntp verify
+
+      - name: Run FizzBuzz in production mode
+        run: |
+          java -jar fizzbuzz-orchestrator/target/fizzbuzz-orchestrator-2.0.0-RC7.jar | tee output.txt
+          test "$(wc -l < output.txt)" -eq 100
+          test "$(grep -cx FizzBuzz output.txt)" -eq 6
+
+      - name: Let an AI agent try to change the rules
+        run: java -jar mcp-server/target/mcp-server-2.0.0-RC7.jar
